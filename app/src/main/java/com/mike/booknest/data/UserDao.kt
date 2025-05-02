@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.nyokabi.harakamall.model.User
+import com.mike.booknest.model.User
 
 
 @Dao
