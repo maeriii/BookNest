@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mike.booknest.R
-import com.mike.booknest.navigation.ROUT_ABOUT
+import com.mike.booknest.navigation.ROUT_BOOK_DETAIL
 import com.mike.booknest.navigation.ROUT_HOME
 import com.mike.booknest.viewmodel.AuthViewModel
 
@@ -51,7 +51,7 @@ fun LoginScreen(
                     navController.navigate(ROUT_HOME) {
                     }
                 } else {
-                    navController.navigate(ROUT_ABOUT) {
+                    navController.navigate(ROUT_BOOK_DETAIL) {
                     }
                 }
             }
