@@ -16,10 +16,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mike.booknest.R
@@ -69,31 +67,18 @@ fun ProfileScreen(navController: NavController) {
                         .clip(CircleShape)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text("John Doe", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                Text("johndoe@example.com", fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
-                Text("Nairobi, Kenya", fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
-
                 Spacer(modifier = Modifier.height(24.dp))
 
-                ProfileActionButton("Edit Profile") {
-                    navController.navigate("editProfile")
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
                 ProfileActionButton("Logout") {
-                    // TODO: Implement logout logic like clearing auth tokens
-                    navController.navigate("signIn") {
-                        popUpTo("profile") { inclusive = true } // Clear backstack
+                    navController.navigate("login") {
+                        popUpTo("profile") { inclusive = true }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 ProfileActionButton("Sign In") {
-                    navController.navigate("signIn")
+                    navController.navigate("login")
                 }
             }
         }
@@ -108,7 +93,7 @@ fun ProfileActionButton(text: String, onClick: () -> Unit) {
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.White)
     ) {
-        Text(text, color = Color(0xFFFF4785), fontWeight = FontWeight.Bold)
+        Text(text, color = Color(0xFFFF4785), fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
     }
 }
 

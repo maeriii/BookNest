@@ -9,8 +9,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.mike.booknest.data.UserDatabase
-import com.mike.booknest.repository.UserRepository
 import com.mike.booknest.ui.screens.auth.LoginScreen
 import com.mike.booknest.ui.screens.auth.RegisterScreen
 import com.mike.booknest.ui.screens.contact.ContactScreen
@@ -21,8 +19,9 @@ import com.mike.booknest.ui.screens.profile.ProfileScreen
 import com.mike.booknest.ui.screens.review.ReviewScreen
 import com.mike.booknest.ui.screens.splash.SplashScreen
 import com.mike.booknest.ui.screens.wishlist.WishlistScreen
-import com.mike.booknest.viewmodel.AuthViewModel
+import com.mike.booknest.ui.screens.bookdetail.BookDetailScreen
 import com.mike.booknest.viewmodel.ProductViewModel
+
 
 
 @Composable
@@ -61,7 +60,7 @@ fun AppNavHost(
             ReviewScreen(navController)
         }
 
-        // Wishlist Screen with title and description
+        // Wishlist Screen
         composable(
             route = "$ROUT_WISHLIST/{title}/{description}",
             arguments = listOf(
@@ -74,7 +73,7 @@ fun AppNavHost(
             WishlistScreen(navController, title, description)
         }
 
-        // Order Screen with title and description
+        // Order Screen
         composable(
             route = "$ROUT_ORDERS/{title}/{description}",
             arguments = listOf(
@@ -87,35 +86,17 @@ fun AppNavHost(
             OrderScreen(navController, title, description)
         }
 
-        // Book Detail Screen (can be implemented similarly)
+        // Book Detail Screen
         composable(
-            route = "$ROUT_ORDERS?title={title}&description={description}",
+            route = "$ROUT_BOOK_DETAIL/{title}/{description}",
             arguments = listOf(
-                navArgument("title") { defaultValue = "Untitled Book" },
-                navArgument("description") { defaultValue = "No description" }
+                navArgument("title") { type = NavType.StringType },
+                navArgument("description") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val title = backStackEntry.arguments?.getString("title") ?: "Untitled Book"
+            val title = backStackEntry.arguments?.getString("title") ?: "Unknown Book"
             val description = backStackEntry.arguments?.getString("description") ?: "No description"
-            OrderScreen(navController, title, description)
+            BookDetailScreen(navController, title, description)
         }
-
-        // Initialize Room Database and Repository for Authentication
-        val appDatabase = UserDatabase.getDatabase(context)
-        val authRepository = UserRepository(appDatabase.userDao())
-        val authViewModel: AuthViewModel = AuthViewModel(authRepository)
-        composable(ROUT_Register) {
-            RegisterScreen(authViewModel, navController) {
-                navController.navigate(ROUT_LOGIN) {
-                    popUpTo(ROUT_Register) { inclusive = true }
-                }
-            }
-        }
-
-        composable(ROUT_LOGIN) {
-            LoginScreen(authViewModel, navController) {
-                navController.navigate(ROUT_HOME) {
-                    popUpTo(ROUT_LOGIN) { inclusive = true }
-                }
-            }
-        }
+    }
+}
