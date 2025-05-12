@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,6 +27,8 @@ import androidx.navigation.NavController
 import com.mike.booknest.R
 import com.mike.booknest.navigation.ROUT_BOOK_DETAIL
 import com.mike.booknest.navigation.ROUT_HOME
+import com.mike.booknest.navigation.ROUT_LOGIN
+import com.mike.booknest.navigation.ROUT_REGISTER
 import com.mike.booknest.viewmodel.AuthViewModel
 
 @Composable
@@ -49,16 +50,20 @@ fun LoginScreen(
             } else {
                 if (user.role == "admin") {
                     navController.navigate(ROUT_HOME) {
+                        popUpTo(ROUT_LOGIN) { inclusive = true }
+                        launchSingleTop = true
                     }
                 } else {
                     navController.navigate(ROUT_BOOK_DETAIL) {
+                        popUpTo(ROUT_LOGIN) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
             }
         }
     }
-//End of login logic
 
+    // UI layout
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +71,6 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Animated Welcome Text
         AnimatedVisibility(
             visible = true,
             enter = fadeIn(animationSpec = tween(1000)),
@@ -81,7 +85,6 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Email Input
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -94,7 +97,6 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Password Input with Show/Hide Toggle
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -114,7 +116,6 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Gradient Login Button
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -146,7 +147,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Register Navigation Button
-        TextButton(onClick = { navController.navigate(ROUT_HOME) }) {
+        TextButton(onClick = { navController.navigate(ROUT_REGISTER) }) {
             Text("Don't have an account? Register")
         }
     }

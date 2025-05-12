@@ -2,6 +2,7 @@ package com.mike.booknest.ui.screens.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,90 +13,81 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mike.booknest.R
+import com.mike.booknest.navigation.ROUT_LOGIN
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(navController: NavController) {
-    val gradient = Brush.linearGradient(
-        colors = listOf(Color(0xFFFF7A00), Color(0xFFFF4785)),
-        start = Offset(0f, 0f),
-        end = Offset.Infinite
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFFFFA726), Color(0xFFF06292)) // orange to pink
     )
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("My Profile", color = Color.White) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                            tint = Color.White
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                modifier = Modifier.background(gradient)
-            )
-        },
-        content = { padding ->
-            Column(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(gradient)
+            .padding(16.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.user),
+                contentDescription = "Profile Picture",
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(gradient)
-                    .padding(padding)
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .size(120.dp)
+                    .clip(CircleShape)
+            )
+
+            Text(
+                text = "wydenmamboleo@gmail.com",
+                color = Color.White,
+                fontSize = 18.sp
+            )
+
+            Button(
+                onClick = { /* handle logout logic here */ },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth(0.7f)
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
+                Text("Logout", color = Color.Black)
+            }
 
-                Image(
-                    painter = painterResource(id = R.drawable.user),
-                    contentDescription = "Profile Picture",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape)
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                ProfileActionButton("Logout") {
-                    navController.navigate("login") {
-                        popUpTo("profile") { inclusive = true }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                ProfileActionButton("Sign In") {
-                    navController.navigate("login")
-                }
+            OutlinedButton(
+                onClick = { navController.navigate(ROUT_LOGIN) },
+                border = ButtonDefaults.outlinedButtonBorder,
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth(0.7f)
+            ) {
+                Text("Sign in", color = Color.White)
             }
         }
-    )
-}
 
-@Composable
-fun ProfileActionButton(text: String, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-    ) {
-        Text(text, color = Color(0xFFFF4785), fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+        // Back Button
+        Icon(
+            imageVector = Icons.Default.ArrowBack,
+            contentDescription = "Back",
+            tint = Color.White,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp)
+                .size(28.dp)
+                .clickable { navController.popBackStack() }
+        )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -43,6 +44,7 @@ fun RegisterScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
+    var passwordsMatch by remember { mutableStateOf(true) } // Track password match
     val context = LocalContext.current
     val animatedAlpha by animateFloatAsState(
         targetValue = 1f,
@@ -68,7 +70,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        //Username
+        // Username
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
@@ -76,13 +78,10 @@ fun RegisterScreen(
             leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "Username Icon") },
             modifier = Modifier.fillMaxWidth()
         )
-        //End of username
-
-
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        //Email
+        // Email
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -91,12 +90,10 @@ fun RegisterScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth()
         )
-        //End of email
 
         Spacer(modifier = Modifier.height(8.dp))
 
-
-        //Role
+        // Role Dropdown
         var role by remember { mutableStateOf("user") }
         val roleOptions = listOf("user", "admin")
         var expanded by remember { mutableStateOf(false) }
@@ -128,12 +125,8 @@ fun RegisterScreen(
                 }
             }
         }
-        //End of role
 
-
-
-
-
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Password Input Field with Show/Hide Toggle
         OutlinedTextField(
@@ -143,7 +136,7 @@ fun RegisterScreen(
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Password Icon") },
             trailingIcon = {
-                val image = if (passwordVisible) painterResource(R.drawable.visibility)  else painterResource(R.drawable.visibilityoff)
+                val image = if (passwordVisible) painterResource(R.drawable.visibility) else painterResource(R.drawable.visibilityoff)
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(image, contentDescription = if (passwordVisible) "Hide Password" else "Show Password")
                 }
@@ -162,21 +155,38 @@ fun RegisterScreen(
             visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Confirm Password Icon") },
             trailingIcon = {
-                val image = if (confirmPasswordVisible) painterResource(R.drawable.visibility)  else painterResource(R.drawable.visibilityoff)
+                val image = if (confirmPasswordVisible) painterResource(R.drawable.visibility) else painterResource(R.drawable.visibilityoff)
                 IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                     Icon(image, contentDescription = if (confirmPasswordVisible) "Hide Password" else "Show Password")
                 }
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isError = !passwordsMatch // Add visual error feedback if passwords don't match
         )
 
+        // Error Message for Password Mismatch
+        if (!passwordsMatch) {
+            Text(
+                text = "Passwords do not match",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
         Spacer(modifier = Modifier.height(5.dp))
+
+        // Register Button with Gradient
+        val scale by animateFloatAsState(
+            targetValue = if (passwordsMatch) 1f else 0.95f, // Scale down when passwords don't match
+            animationSpec = tween(durationMillis = 100)
+        )
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
+                .scale(scale)
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(Color(0xFF00C6FF), Color(0xFF0072FF))
@@ -190,7 +200,7 @@ fun RegisterScreen(
                     if (username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
                         Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
                     } else if (password != confirmPassword) {
-                        Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                        passwordsMatch = false
                     } else {
                         authViewModel.registerUser(User(username = username, email = email, role = role, password = password))
                         onRegisterSuccess()
@@ -205,6 +215,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(5.dp))
 
+        // Navigation to Login Screen
         TextButton(
             onClick = { navController.navigate(ROUT_HOME) }
         ) {

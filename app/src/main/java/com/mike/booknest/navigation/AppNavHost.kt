@@ -9,8 +9,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.mike.booknest.ui.screens.auth.LoginScreen
-import com.mike.booknest.ui.screens.auth.RegisterScreen
 import com.mike.booknest.ui.screens.contact.ContactScreen
 import com.mike.booknest.ui.screens.dashboard.DashboardScreen
 import com.mike.booknest.ui.screens.home.HomeScreen
@@ -21,7 +19,6 @@ import com.mike.booknest.ui.screens.splash.SplashScreen
 import com.mike.booknest.ui.screens.wishlist.WishlistScreen
 import com.mike.booknest.ui.screens.bookdetail.BookDetailScreen
 import com.mike.booknest.viewmodel.ProductViewModel
-
 
 
 @Composable
@@ -59,6 +56,8 @@ fun AppNavHost(
         composable(ROUT_REVIEW) {
             ReviewScreen(navController)
         }
+
+
 
         // Wishlist Screen
         composable(
